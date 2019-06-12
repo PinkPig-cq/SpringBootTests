@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.hpeu.cache.dao.UserDao">
+    <sql id="all">Id,Age,Name,ClassesID</sql>
+
+    <resultMap id="BaseUser" type="com.hpeu.cache.pojo.Users">
+        <constructor>
+            <idArg column="Id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="Name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="Age" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="ClassesID" jdbcType="INTEGER" javaType="java.lang.String" />
+        </constructor>
+        <!--<id property="id" column="Id"></id>-->
+        <!--<result property="age" column="Age"></result>-->
+        <!--<result property="name" column="Name"></result>-->
+        <!--<result property="classesId" column="ClassesID"></result>-->
+    </resultMap>
+    <cache></cache>
+    <select id="findAll" resultMap="BaseUser">
+        select
+        <include refid="all"/>
+        from `user`
+    </select>
+    <select id="findById" resultMap="BaseUser">
+        select
+        <include refid="all"></include>
+        from `user`
+        <where>
+            <if test="id!=null">
+                Id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="selectPageVo" resultType="com.hpeu.cache.pojo.Users">
+        SELECT id,name FROM user WHERE state=#{state}
+    </select>
+    <insert id="add" parameterType="com.hpeu.cache.pojo.Users" useGeneratedKeys="true" >
+        insert into `user`(`Age`,`Name`,`ClassesID`) values (#{age},#{name},#{classesId,jdbcType=INTEGER,typeHandler=com.hpeu.cache.configura.StringIntTypeHandler})
+    </insert>
+    <insert id="addAll" parameterType="com.hpeu.cache.pojo.Users" useGeneratedKeys="true">
+         insert into `user`(`Age`,`Name`,`ClassesID`) values (#{age},#{name},#{classesId,jdbcType=INTEGER,typeHandler=com.hpeu.cache.configura.StringIntTypeHandler})
+    </insert>
+    <delete id="deleteById" parameterType="integer">
+        delete `user` where Id = #{id}
+    </delete>
+</mapper>
